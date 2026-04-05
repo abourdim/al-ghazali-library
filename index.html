@@ -90,8 +90,19 @@ body{
   border-bottom:1px solid var(--brd);padding:10px 0;margin-bottom:14px;
 }
 [data-theme="dark"] .filter-bar{background:rgba(26,22,18,.92)}
-.filter-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory}
-.filter-inner::-webkit-scrollbar{display:none}
+.filter-inner{
+  max-width:1280px;margin:0 auto;padding:0 20px;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+}
+@media(max-width:900px){
+  .filter-inner{
+    flex-wrap:nowrap;justify-content:flex-start;
+    overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;
+    -webkit-mask-image:linear-gradient(to right,transparent,black 4%,black 96%,transparent);
+    mask-image:linear-gradient(to right,transparent,black 4%,black 96%,transparent);
+  }
+  .filter-inner::-webkit-scrollbar{display:none}
+}
 .chip{
   border:1.5px solid var(--brd);background:var(--card);
   padding:8px 16px;border-radius:20px;cursor:pointer;font-size:.78rem;
