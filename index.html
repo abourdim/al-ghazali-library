@@ -4,396 +4,443 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>مكتبة الغزالي التفاعلية — Al-Ghazali Interactive Library</title>
-<meta name="description" content="Interactive trilingual web apps based on 52 books by Sheikh Mohammed Al-Ghazali (1917-1996). Organized by theme.">
+<meta name="description" content="52 applications web interactives trilingues basées sur les livres de Sheikh Mohammed Al-Ghazali (1917-1996).">
+<meta name="theme-color" content="#faf6ef">
+<meta property="og:title" content="مكتبة الغزالي التفاعلية">
+<meta property="og:description" content="52 interactive trilingual web apps based on Sheikh Mohammed Al-Ghazali's books">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#fafaf7;--fg:#1a1a1a;--muted:#6b6b6b;--border:#e5e5e0;
-    --card:#ffffff;--card-hover:#f5f5f0;--accent:#2e5d3a;--accent-light:#4a7a54;
-    --shadow:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.06);
-    --shadow-hover:0 10px 25px rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.04);
-    --radius:14px;--ff-ar:'Amiri','Scheherazade New',serif;--ff-en:'Inter',system-ui,sans-serif;
-  }
-  [data-theme="dark"]{
-    --bg:#0f1410;--fg:#f0f0e8;--muted:#999;--border:#2a2f2a;
-    --card:#1a1f1a;--card-hover:#232923;--accent:#7fb88a;--accent-light:#9fcdaa;
-    --shadow:0 1px 3px rgba(0,0,0,.3);--shadow-hover:0 10px 25px rgba(0,0,0,.4);
-  }
-  html{scroll-behavior:smooth}
-  body{
-    background:var(--bg);color:var(--fg);font-family:var(--ff-en);
-    min-height:100vh;line-height:1.6;transition:background .3s,color .3s;
-  }
-  body[dir="rtl"]{font-family:var(--ff-ar)}
-  .container{max-width:1280px;margin:0 auto;padding:0 24px}
+/* ═══ ROOT VARS — Hajj Guide palette ═══ */
+:root{
+  --bg:#faf6ef;--card:#fff;--acc:#f0e9dd;--t1:#2c2417;--t2:#6b5d4d;--t3:#9a8c7a;
+  --gold:#c8a84e;--grn:#2e7d52;--teal:#1a8a7d;--rose:#c45a6b;--blue:#3b7dd8;--brd:#e8dfd2;
+  --sh:0 2px 12px rgba(44,36,23,0.07);--shm:0 6px 24px rgba(44,36,23,0.12);
+  --r:14px;--rr:22px;
+  --ff:'Nunito',sans-serif;--fd:'Amiri',serif;--fu:'Readex Pro',sans-serif;--fa:'Noto Naskh Arabic','Amiri',serif;
+  --isl-pat:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L55 30L30 55L5 30Z' fill='none' stroke='%23c8a84e' stroke-width='.4' opacity='.12'/%3E%3Cpath d='M30 15L45 30L30 45L15 30Z' fill='none' stroke='%23c8a84e' stroke-width='.3' opacity='.08'/%3E%3C/svg%3E");
+}
+[data-theme="dark"]{
+  --bg:#1a1612;--card:#2a241e;--acc:#332c24;--t1:#ede6d8;--t2:#b8a88e;--t3:#8a7a66;
+  --brd:#3d362c;--gold:#d4b45c;--grn:#4fb87a;--teal:#38bfb0;
+  --sh:0 2px 12px rgba(0,0,0,.3);--shm:0 6px 24px rgba(0,0,0,.4);
+}
 
-  /* ═══ HEADER ═══ */
-  header{padding:60px 0 40px;text-align:center;position:relative}
-  .top-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:40px}
-  .logo{font-size:1.1rem;font-weight:700;color:var(--accent)}
-  .controls{display:flex;gap:10px;align-items:center}
-  .ctrl-btn{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-size:.85rem;cursor:pointer;color:var(--fg);font-family:inherit;transition:.2s}
-  .ctrl-btn:hover{background:var(--card-hover);border-color:var(--accent)}
-  .ctrl-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-  h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;margin-bottom:12px;letter-spacing:-.02em}
-  h1 .arabic{display:block;font-family:var(--ff-ar);font-size:clamp(2.5rem,6vw,4.5rem);color:var(--accent);margin-bottom:8px}
-  .subtitle{font-size:1.1rem;color:var(--muted);max-width:680px;margin:16px auto 0;line-height:1.7}
-  .stats{display:flex;justify-content:center;gap:40px;margin-top:32px;flex-wrap:wrap}
-  .stat{text-align:center}
-  .stat-num{font-size:2rem;font-weight:700;color:var(--accent)}
-  .stat-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff);background:var(--bg);background-image:var(--isl-pat);color:var(--t1);
+  -webkit-font-smoothing:antialiased;transition:background .3s,color .3s;min-height:100vh;line-height:1.6;
+}
+[lang="ar"] body{font-family:var(--fa),var(--ff),sans-serif}
+[lang="ar"] h1,[lang="ar"] h2,[lang="ar"] .section-title{font-family:var(--fa),var(--fd),serif}
 
-  /* ═══ SEARCH ═══ */
-  .search-wrap{max-width:600px;margin:40px auto 0;position:relative}
-  .search-input{width:100%;padding:14px 20px 14px 48px;background:var(--card);border:1px solid var(--border);border-radius:30px;font-size:.95rem;color:var(--fg);font-family:inherit;outline:none;transition:.2s}
-  [dir="rtl"] .search-input{padding:14px 48px 14px 20px}
-  .search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,93,58,.1)}
-  .search-icon{position:absolute;top:50%;transform:translateY(-50%);left:18px;color:var(--muted)}
-  [dir="rtl"] .search-icon{left:auto;right:18px}
+::selection{background:rgba(200,168,78,.25);color:var(--t1)}
 
-  /* ═══ SECTIONS ═══ */
-  section{padding:50px 0;border-top:1px solid var(--border)}
-  .section-header{display:flex;align-items:baseline;gap:16px;margin-bottom:30px;flex-wrap:wrap}
-  .section-title{font-size:1.75rem;font-weight:700;color:var(--fg)}
-  .section-desc{color:var(--muted);font-size:.95rem;flex:1;min-width:200px}
-  .section-count{background:var(--accent);color:#fff;border-radius:20px;padding:4px 12px;font-size:.75rem;font-weight:600}
+/* ═══ SACRED BAR ═══ */
+.sacred-bar{text-align:center;padding:6px 16px 4px;background:linear-gradient(135deg,rgba(200,168,78,.08),rgba(46,125,82,.04));border-bottom:1px solid rgba(200,168,78,.12)}
+.sacred-bismillah{font-family:'Amiri',serif;font-size:1.15rem;color:var(--gold);line-height:1.2;direction:rtl}
+.sacred-verse{font-family:'Noto Naskh Arabic',serif;font-size:.65rem;color:var(--grn);direction:rtl;opacity:.55;margin-top:2px}
 
-  /* ═══ GRID ═══ */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-  .card{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    padding:24px;text-decoration:none;color:inherit;display:flex;flex-direction:column;
-    box-shadow:var(--shadow);transition:all .25s cubic-bezier(.4,0,.2,1);
-    position:relative;overflow:hidden;min-height:180px;
-  }
-  .card::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:3px;
-    background:linear-gradient(90deg,var(--accent),var(--accent-light));
-    transform:scaleX(0);transform-origin:right;transition:transform .3s;
-  }
-  [dir="ltr"] .card::before{transform-origin:left}
-  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--accent-light)}
-  .card:hover::before{transform:scaleX(1)}
-  .card-num{position:absolute;top:16px;left:16px;background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;font-family:var(--ff-en)}
-  [dir="rtl"] .card-num{left:auto;right:16px}
-  .card-title-ar{font-family:var(--ff-ar);font-size:1.5rem;font-weight:700;color:var(--accent);margin:16px 0 8px;line-height:1.3;direction:rtl}
-  .card-title-en{font-size:.85rem;color:var(--muted);font-family:var(--ff-en);direction:ltr;text-align:left;font-weight:500}
-  .card-footer{margin-top:auto;padding-top:16px;display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--muted);font-family:var(--ff-en)}
-  .card-link{color:var(--accent);font-weight:600;text-decoration:none}
-  .card:hover .card-link{text-decoration:underline}
+/* ═══ HEADER ═══ */
+.app-header{background:var(--card);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:100;box-shadow:var(--sh);backdrop-filter:blur(10px)}
+.header-inner{max-width:1280px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{font-size:2.2rem;filter:drop-shadow(0 2px 4px rgba(200,168,78,.3))}
+.logo h1{font-family:var(--fd);font-size:1.5rem;color:var(--gold);line-height:1.1;letter-spacing:.3px}
+[lang="ar"] .logo h1{font-family:var(--fa),var(--fd),serif}
+.header-controls{display:flex;gap:8px;align-items:center}
+.lang-switch{display:flex;background:var(--acc);border-radius:18px;padding:2px;border:1px solid var(--brd)}
+.lang-opt{border:none;background:0;padding:5px 9px;border-radius:16px;cursor:pointer;transition:.3s;display:flex;align-items:center;justify-content:center;opacity:.5}
+.lang-opt.active{background:var(--gold);box-shadow:0 1px 4px rgba(200,168,78,.3);opacity:1}
+.lang-opt:hover:not(.active){opacity:.8}
+.lang-opt svg{display:block;border-radius:2px}
+.theme-btn{border:none;background:var(--acc);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:.3s;border:1px solid var(--brd);color:var(--t1)}
+.theme-btn:hover{transform:scale(1.1);box-shadow:var(--sh)}
 
-  /* ═══ FOOTER ═══ */
-  footer{padding:60px 0 40px;text-align:center;border-top:1px solid var(--border);margin-top:60px}
-  footer p{color:var(--muted);font-size:.85rem;line-height:1.8}
-  footer a{color:var(--accent);text-decoration:none}
-  footer a:hover{text-decoration:underline}
-  .disclaimer{max-width:680px;margin:20px auto;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem;color:var(--muted);line-height:1.8}
+/* ═══ HERO ═══ */
+.hero{max-width:1280px;margin:0 auto;padding:60px 20px 40px;text-align:center;position:relative}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(200,168,78,.08),transparent 70%);pointer-events:none;z-index:-1}
+.hero-ornament{font-size:2.5rem;color:var(--gold);opacity:.6;margin-bottom:16px}
+.hero h2{font-family:var(--fa),var(--fd),serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;color:var(--gold);margin-bottom:10px;letter-spacing:.01em;line-height:1.25}
+.hero .sub-en{font-family:var(--fu);font-size:1rem;color:var(--t2);font-weight:500;margin-bottom:18px;letter-spacing:.02em}
+.hero p.tagline{color:var(--t2);font-size:1rem;max-width:720px;margin:0 auto;line-height:1.8}
+[lang="ar"] .hero p.tagline{font-size:1.05rem}
 
-  /* ═══ RESPONSIVE ═══ */
-  @media(max-width:640px){
-    header{padding:40px 0 20px}
-    .top-bar{flex-direction:column;gap:12px}
-    .stats{gap:20px}
-    .stat-num{font-size:1.5rem}
-    .grid{grid-template-columns:1fr}
-    .section-header{flex-direction:column;align-items:flex-start;gap:8px}
-  }
-  .hidden{display:none!important}
-  .fade-in{animation:fadeIn .5s ease-out}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* ═══ STATS ═══ */
+.stats{display:flex;justify-content:center;gap:40px;margin:36px 0;flex-wrap:wrap}
+.stat{text-align:center;padding:14px 20px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rr);box-shadow:var(--sh);min-width:110px;transition:.3s}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shm)}
+.stat-num{font-family:var(--fd);font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1}
+.stat-label{font-family:var(--fu);font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;font-weight:600}
+
+/* ═══ SEARCH ═══ */
+.search-wrap{display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--brd);border-radius:28px;padding:10px 20px;max-width:560px;margin:0 auto 20px;transition:all .3s;box-shadow:var(--sh)}
+.search-wrap:focus-within{box-shadow:var(--shm);border-color:var(--gold)}
+.search-wrap svg{color:var(--t3);flex-shrink:0}
+.search-wrap input{border:none;background:0;flex:1;font-size:.92rem;color:var(--t1);outline:none;font-family:inherit}
+.search-wrap input::placeholder{color:var(--t3)}
+
+/* ═══ SECTIONS ═══ */
+main{max-width:1280px;margin:0 auto;padding:20px 20px 60px}
+.theme-section{margin-bottom:50px;animation:fadein .6s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.section-head{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding:16px 22px;background:var(--card);border-radius:var(--rr);border-left:5px solid var(--gold);box-shadow:var(--sh);flex-wrap:wrap}
+[dir="rtl"] .section-head{border-left:none;border-right:5px solid var(--gold)}
+.section-icon{font-size:2rem;filter:drop-shadow(0 2px 4px rgba(200,168,78,.2))}
+.section-title{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--gold);flex-shrink:0;letter-spacing:.2px}
+[lang="ar"] .section-title{font-family:var(--fa),var(--fd),serif;font-size:1.7rem}
+.section-count{background:var(--gold);color:#fff;border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:700;font-family:var(--fu)}
+.section-desc{color:var(--t2);font-size:.88rem;flex:1;min-width:200px}
+[lang="ar"] .section-desc{font-size:.95rem}
+
+/* ═══ CARDS GRID ═══ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.book-card{
+  background:var(--card);border:1px solid var(--brd);border-radius:var(--rr);
+  padding:22px;text-decoration:none;color:inherit;display:flex;flex-direction:column;
+  box-shadow:var(--sh);transition:all .3s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;min-height:200px;
+}
+.book-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--grn),var(--gold),var(--teal));
+  opacity:0;transition:opacity .3s;
+}
+.book-card:hover{transform:translateY(-4px);box-shadow:var(--shm);border-color:var(--gold)}
+.book-card:hover::before{opacity:1}
+.book-num{
+  position:absolute;top:16px;right:16px;
+  background:var(--gold);color:#fff;
+  min-width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:700;font-family:var(--fu);
+  box-shadow:0 2px 6px rgba(200,168,78,.3);
+}
+[dir="rtl"] .book-num{right:auto;left:16px}
+.book-icon{font-size:1.8rem;margin-bottom:10px;opacity:.7}
+.book-title-ar{
+  font-family:var(--fd);font-size:1.55rem;font-weight:700;
+  color:var(--gold);margin-bottom:8px;line-height:1.3;
+  direction:rtl;text-align:right;letter-spacing:.2px;
+}
+.book-title-en{
+  font-family:var(--fu);font-size:.85rem;color:var(--t2);
+  direction:ltr;text-align:left;font-weight:500;line-height:1.4;margin-bottom:auto;
+}
+.book-footer{
+  margin-top:16px;padding-top:14px;border-top:1px dashed var(--brd);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:.72rem;color:var(--t3);font-family:var(--fu);
+}
+.book-footer .open-link{color:var(--grn);font-weight:700;transition:.2s}
+.book-card:hover .open-link{color:var(--gold)}
+.book-footer .badges{display:flex;gap:4px}
+.book-footer .badge{background:var(--acc);padding:2px 8px;border-radius:10px;font-size:.65rem;color:var(--t2)}
+
+/* ═══ DISCLAIMER ═══ */
+.disclaimer{
+  max-width:820px;margin:40px auto;
+  background:linear-gradient(135deg,rgba(200,168,78,.08),rgba(200,168,78,.02));
+  border-left:4px solid var(--gold);border-radius:0 var(--r) var(--r) 0;
+  padding:18px 22px;font-size:.88rem;color:var(--t2);line-height:1.8;
+}
+[dir="rtl"] .disclaimer{border-left:none;border-right:4px solid var(--gold);border-radius:var(--r) 0 0 var(--r)}
+.disclaimer strong{color:var(--gold)}
+
+/* ═══ FOOTER ═══ */
+footer{
+  text-align:center;padding:40px 20px;
+  border-top:1px solid var(--brd);margin-top:40px;
+  background:var(--card);
+}
+footer .ornament{font-size:1.5rem;color:var(--gold);opacity:.5;margin-bottom:12px}
+footer p{color:var(--t2);font-size:.85rem;line-height:1.8;font-family:var(--fu)}
+footer a{color:var(--gold);text-decoration:none;font-weight:600;transition:.2s}
+footer a:hover{color:var(--grn);text-decoration:underline}
+footer .made-with{font-family:var(--fd);color:var(--gold);margin-top:8px;font-size:1rem}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:720px){
+  .header-inner{flex-direction:column;gap:10px;padding:10px 14px}
+  .hero{padding:40px 16px 30px}
+  .stats{gap:16px}
+  .stat{padding:10px 14px;min-width:90px}
+  .stat-num{font-size:1.7rem}
+  .grid{grid-template-columns:1fr}
+  .section-head{padding:14px 16px;gap:10px}
+  .section-title{font-size:1.25rem}
+  [lang="ar"] .section-title{font-size:1.4rem}
+  main{padding:16px}
+}
+
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 
-<div class="container">
+<!-- ═══ SACRED BAR ═══ -->
+<div class="sacred-bar">
+  <div class="sacred-bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+  <div class="sacred-verse">وَأَنزَلْنَا إِلَيْكَ الذِّكْرَ لِتُبَيِّنَ لِلنَّاسِ مَا نُزِّلَ إِلَيْهِمْ وَلَعَلَّهُمْ يَتَفَكَّرُونَ</div>
+</div>
 
-  <div class="top-bar">
-    <div class="logo">📚 مكتبة الغزالي</div>
-    <div class="controls">
-      <button class="ctrl-btn active" data-lang="ar" onclick="setLang('ar')">عربي</button>
-      <button class="ctrl-btn" data-lang="en" onclick="setLang('en')">English</button>
-      <button class="ctrl-btn" data-lang="fr" onclick="setLang('fr')">Français</button>
-      <button class="ctrl-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+<!-- ═══ HEADER ═══ -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">📚</span>
+      <h1 id="logoTitle">مكتبة الغزالي</h1>
     </div>
+    <nav class="header-controls">
+      <div class="lang-switch">
+        <button class="lang-opt active" data-lang="ar" onclick="setLang('ar')" title="العربية">
+          <svg width="22" height="14" viewBox="0 0 30 20"><rect width="15" height="20" fill="#006233"/><rect x="15" width="15" height="20" fill="#fff"/><circle cx="16.5" cy="10" r="5" fill="#D21034"/><circle cx="18" cy="10" r="4" fill="#fff"/><circle cx="17" cy="10" r="4" fill="#006233"/></svg>
+        </button>
+        <button class="lang-opt" data-lang="en" onclick="setLang('en')" title="English">
+          <svg width="22" height="14" viewBox="0 0 30 20"><rect width="30" height="20" fill="#012169"/><path d="M0,0L30,20M30,0L0,20" stroke="#fff" stroke-width="3"/><path d="M0,0L30,20M30,0L0,20" stroke="#C8102E" stroke-width="1.5"/><rect x="12" width="6" height="20" fill="#fff"/><rect y="7" width="30" height="6" fill="#fff"/><rect x="13" width="4" height="20" fill="#C8102E"/><rect y="8" width="30" height="4" fill="#C8102E"/></svg>
+        </button>
+        <button class="lang-opt" data-lang="fr" onclick="setLang('fr')" title="Français">
+          <svg width="22" height="14" viewBox="0 0 30 20"><rect width="10" height="20" fill="#002395"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ED2939"/></svg>
+        </button>
+      </div>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Theme">🌙</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-ornament">۞</div>
+  <h2 id="heroTitle">مكتبة الغزالي التفاعلية</h2>
+  <div class="sub-en">Al-Ghazali Interactive Library</div>
+  <p class="tagline" id="tagline">٥٢ تطبيق ويب تفاعلي ثلاثي اللغة مبني على كتب الشيخ محمد الغزالي رحمه الله (١٩١٧–١٩٩٦) — منظمة حسب الموضوع، مع رواة صوتيين ومسابقات ووضعين للأعمار</p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">52</div><div class="stat-label" id="lblBooks">Books</div></div>
+    <div class="stat"><div class="stat-num">7</div><div class="stat-label" id="lblThemes">Themes</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label" id="lblLangs">Languages</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label" id="lblFree">Free</div></div>
   </div>
 
-  <header>
-    <h1>
-      <span class="arabic">مكتبة الغزالي التفاعلية</span>
-      <span id="titleEn" class="hidden">Al-Ghazali Interactive Library</span>
-    </h1>
-    <p class="subtitle" id="subtitle">
-      ٥٢ تطبيق ويب تفاعلي ثلاثي اللغة مبني على كتب الشيخ محمد الغزالي (١٩١٧-١٩٩٦)
-      — منظمة حسب الموضوع، مع رواة صوتيين ومسابقات ووضعين للأعمار
-    </p>
-    <div class="stats">
-      <div class="stat"><div class="stat-num">52</div><div class="stat-label">Books</div></div>
-      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Languages</div></div>
-      <div class="stat"><div class="stat-num">7</div><div class="stat-label">Themes</div></div>
-      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Free</div></div>
-    </div>
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" class="search-input" id="searchInput" placeholder="ابحث في الكتب... / Search books..." oninput="filterApps(this.value)">
-    </div>
-  </header>
+  <div class="search-wrap">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="ابحث في الكتب..." oninput="filterBooks(this.value)">
+  </div>
+</section>
 
-</div>
-
+<!-- ═══ SECTIONS ═══ -->
 <main id="sectionsContainer"></main>
 
-<div class="container">
-  <footer>
-    <div class="disclaimer" id="disclaimer">
-      ⚠️ <strong>تنبيه:</strong> هذه التطبيقات مستوحاة من كتب الشيخ محمد الغزالي رحمه الله، وليست بديلاً عن قراءة الكتب الأصلية. المحتوى ملخصات تعليمية مبسطة. يُرجى الرجوع للكتب الأصلية وللعلماء المتخصصين.
-    </div>
-    <p>
-      صُنعت بحب في الجزائر · Made with love in Algeria<br>
-      <a href="https://github.com/abourdim" target="_blank">GitHub: @abourdim</a> ·
-      <a href="mailto:abdelhak.bourdim@gmail.com">abdelhak.bourdim@gmail.com</a>
-    </p>
-  </footer>
+<div class="disclaimer" id="disclaimer">
+  <strong>⚠️ تنبيه مهم:</strong> هذه التطبيقات مستوحاة من كتب الشيخ محمد الغزالي رحمه الله، وليست بديلاً عن قراءة الكتب الأصلية. المحتوى ملخصات تعليمية مبسطة. يُرجى الرجوع للكتب الأصلية وللعلماء المتخصصين.
 </div>
+
+<footer>
+  <div class="ornament">۞ ۞ ۞</div>
+  <p id="footerText">صُنعت بحب في الجزائر · Made with love in Algeria</p>
+  <p class="made-with">﷽</p>
+  <p>
+    <a href="https://github.com/abourdim" target="_blank">GitHub: @abourdim</a> ·
+    <a href="mailto:abdelhak.bourdim@gmail.com">abdelhak.bourdim@gmail.com</a>
+  </p>
+</footer>
 
 <script>
 // ═══════════════ DATA ═══════════════
-const BOOKS_DATA = [
-  // Theme 1: Quran (6 books)
-  {id:23, slug:'kayfa-nataamal-maa-al-quran', ar:'كيف نتعامل مع القرآن', en:'How to Deal with the Quran', fr:'Comment Traiter le Coran', theme:'quran'},
-  {id:24, slug:'nahwa-tafsir-mawdui', ar:'نحو تفسير موضوعي', en:'Thematic Quran Interpretation', fr:'Vers un Tafsir Thématique', theme:'quran'},
-  {id:25, slug:'al-mahawir-al-khamsah', ar:'المحاور الخمسة للقرآن', en:'The Five Axes of the Quran', fr:'Les Cinq Axes du Coran', theme:'quran'},
-  {id:45, slug:'nazarat-fi-al-quran', ar:'نظرات في القرآن', en:'Insights into the Quran', fr:'Regards sur le Coran', theme:'quran'},
-  {id:51, slug:'marakah-al-mushaf', ar:'معركة المصحف', en:'Battle of the Quran', fr:'La Bataille du Coran', theme:'quran'},
-  {id:38, slug:'difaa-al-aqidah', ar:'دفاع عن العقيدة والشريعة', en:'Defense of the Creed', fr:'Défense de la Croyance', theme:'quran'},
+const BOOKS = [
+  {id:23, slug:'kayfa-nataamal-maa-al-quran', ar:'كيف نتعامل مع القرآن', en:'How to Deal with the Quran', fr:'Comment Traiter le Coran', icon:'📖', theme:'quran'},
+  {id:24, slug:'nahwa-tafsir-mawdui', ar:'نحو تفسير موضوعي', en:'Thematic Quran Interpretation', fr:'Vers un Tafsir Thématique', icon:'📜', theme:'quran'},
+  {id:25, slug:'al-mahawir-al-khamsah', ar:'المحاور الخمسة للقرآن', en:'The Five Axes of the Quran', fr:'Les Cinq Axes du Coran', icon:'✨', theme:'quran'},
+  {id:45, slug:'nazarat-fi-al-quran', ar:'نظرات في القرآن', en:'Insights into the Quran', fr:'Regards sur le Coran', icon:'👁️', theme:'quran'},
+  {id:51, slug:'marakah-al-mushaf', ar:'معركة المصحف', en:'Battle of the Quran', fr:'La Bataille du Coran', icon:'⚔️', theme:'quran'},
+  {id:38, slug:'difaa-al-aqidah', ar:'دفاع عن العقيدة والشريعة', en:'Defense of Creed & Sharia', fr:'Défense de la Croyance', icon:'🛡️', theme:'quran'},
 
-  // Theme 2: Sunnah & Hadith (4 books)
-  {id:21, slug:'fiqh-al-sirah', ar:'فقه السيرة', en:'Understanding the Sirah', fr:'Fiqh de la Sira', theme:'sunnah'},
-  {id:22, slug:'al-sunnah-al-nabawiyah', ar:'السنة النبوية', en:'The Prophetic Sunnah', fr:'La Sunna Prophétique', theme:'sunnah'},
-  {id:43, slug:'kunuz-min-al-sunnah', ar:'كنوز من السنة', en:'Treasures from the Sunnah', fr:'Trésors de la Sunna', theme:'sunnah'},
-  {id:26, slug:'fan-al-dhikr', ar:'فن الذكر والدعاء', en:'The Art of Dhikr & Dua', fr:'L\'Art du Dhikr et du Dua', theme:'sunnah'},
+  {id:21, slug:'fiqh-al-sirah', ar:'فقه السيرة', en:'Understanding the Sirah', fr:'Fiqh de la Sira', icon:'🌙', theme:'sunnah'},
+  {id:22, slug:'al-sunnah-al-nabawiyah', ar:'السنة النبوية', en:'The Prophetic Sunnah', fr:'La Sunna Prophétique', icon:'📿', theme:'sunnah'},
+  {id:43, slug:'kunuz-min-al-sunnah', ar:'كنوز من السنة', en:'Treasures from the Sunnah', fr:'Trésors de la Sunna', icon:'💎', theme:'sunnah'},
+  {id:26, slug:'fan-al-dhikr', ar:'فن الذكر والدعاء', en:'The Art of Dhikr & Dua', fr:'L\'Art du Dhikr', icon:'🤲', theme:'sunnah'},
 
-  // Theme 3: Faith & Creed (6 books)
-  {id:20, slug:'aqidat-al-muslim', ar:'عقيدة المسلم', en:'The Muslim\'s Creed', fr:'La Croyance du Musulman', theme:'creed'},
-  {id:11, slug:'rakaiz-al-iman', ar:'ركائز الإيمان', en:'Pillars of Faith', fr:'Les Piliers de la Foi', theme:'creed'},
-  {id:27, slug:'al-janib-al-atifi', ar:'الجانب العاطفي من الإسلام', en:'The Emotional Side of Islam', fr:'Le Côté Émotionnel de l\'Islam', theme:'creed'},
-  {id:36, slug:'al-hayat-al-ula', ar:'الحياة الأولى', en:'The First Life', fr:'La Première Vie', theme:'creed'},
-  {id:37, slug:'maa-allah', ar:'مع الله', en:'With God', fr:'Avec Dieu', theme:'creed'},
-  {id:35, slug:'taamulat', ar:'تأملات في الدين والحياة', en:'Reflections on Religion & Life', fr:'Réflexions sur la Religion et la Vie', theme:'creed'},
+  {id:20, slug:'aqidat-al-muslim', ar:'عقيدة المسلم', en:'The Muslim\'s Creed', fr:'La Croyance du Musulman', icon:'☪️', theme:'creed'},
+  {id:11, slug:'rakaiz-al-iman', ar:'ركائز الإيمان', en:'Pillars of Faith', fr:'Piliers de la Foi', icon:'🕌', theme:'creed'},
+  {id:27, slug:'al-janib-al-atifi', ar:'الجانب العاطفي من الإسلام', en:'The Emotional Side of Islam', fr:'Le Côté Émotionnel', icon:'💗', theme:'creed'},
+  {id:36, slug:'al-hayat-al-ula', ar:'الحياة الأولى', en:'The First Life', fr:'La Première Vie', icon:'🌱', theme:'creed'},
+  {id:37, slug:'maa-allah', ar:'مع الله', en:'With God', fr:'Avec Dieu', icon:'🌟', theme:'creed'},
+  {id:35, slug:'taamulat', ar:'تأملات في الدين والحياة', en:'Reflections on Religion & Life', fr:'Réflexions', icon:'🪷', theme:'creed'},
 
-  // Theme 4: Ethics & Character (8 books)
-  {id:19, slug:'khuluq-al-muslim', ar:'خلق المسلم', en:'The Muslim\'s Character', fr:'Le Caractère du Musulman', theme:'ethics'},
-  {id:1, slug:'al-ghirbal', ar:'الغربال', en:'The Sieve', fr:'Le Tamis', theme:'ethics'},
-  {id:2, slug:'al-miraat', ar:'المرآة', en:'The Mirror', fr:'Le Miroir', theme:'ethics'},
-  {id:3, slug:'al-saaiqa', ar:'الصاعقة', en:'The Thunderbolt', fr:'La Foudre', theme:'ethics'},
-  {id:4, slug:'ayqidh-taqatak', ar:'أيقظ طاقتك', en:'Awaken Your Energy', fr:'Éveille ton Énergie', theme:'ethics'},
-  {id:6, slug:'jaddid-hayatak', ar:'جدد حياتك', en:'Renew Your Life', fr:'Renouvelle ta Vie', theme:'ethics'},
-  {id:5, slug:'iyadat-al-ummah', ar:'عيادة الأمة', en:'The Ummah Clinic', fr:'La Clinique de la Oumma', theme:'ethics'},
-  {id:15, slug:'hasad-al-ghurur', ar:'حصاد الغرور', en:'The Harvest of Arrogance', fr:'La Récolte de l\'Orgueil', theme:'ethics'},
+  {id:19, slug:'khuluq-al-muslim', ar:'خلق المسلم', en:'The Muslim\'s Character', fr:'Le Caractère du Musulman', icon:'🌿', theme:'ethics'},
+  {id:1, slug:'al-ghirbal', ar:'الغربال', en:'The Sieve', fr:'Le Tamis', icon:'🔍', theme:'ethics'},
+  {id:2, slug:'al-miraat', ar:'المرآة', en:'The Mirror', fr:'Le Miroir', icon:'🪞', theme:'ethics'},
+  {id:3, slug:'al-saaiqa', ar:'الصاعقة', en:'The Thunderbolt', fr:'La Foudre', icon:'⚡', theme:'ethics'},
+  {id:4, slug:'ayqidh-taqatak', ar:'أيقظ طاقتك', en:'Awaken Your Energy', fr:'Éveille ton Énergie', icon:'🔥', theme:'ethics'},
+  {id:6, slug:'jaddid-hayatak', ar:'جدد حياتك', en:'Renew Your Life', fr:'Renouvelle ta Vie', icon:'🌺', theme:'ethics'},
+  {id:5, slug:'iyadat-al-ummah', ar:'عيادة الأمة', en:'The Ummah Clinic', fr:'La Clinique de la Oumma', icon:'⚕️', theme:'ethics'},
+  {id:15, slug:'hasad-al-ghurur', ar:'حصاد الغرور', en:'Harvest of Arrogance', fr:'Récolte de l\'Orgueil', icon:'🌾', theme:'ethics'},
 
-  // Theme 5: Society & Politics (11 books)
-  {id:16, slug:'min-huna-nalam', ar:'من هنا نعلم', en:'This Is Where We Learn', fr:'C\'est Ici Que Nous Apprenons', theme:'society'},
-  {id:29, slug:'al-islam-wal-awda-al-iqtisadiyah', ar:'الإسلام والأوضاع الاقتصادية', en:'Islam & Economics', fr:'L\'Islam et l\'Économie', theme:'society'},
-  {id:30, slug:'al-islam-wal-istibdad', ar:'الإسلام والاستبداد السياسي', en:'Islam & Political Tyranny', fr:'L\'Islam et la Tyrannie', theme:'society'},
-  {id:32, slug:'al-islam-wal-manahij', ar:'الإسلام والمناهج الاشتراكية', en:'Islam & Socialist Systems', fr:'L\'Islam et le Socialisme', theme:'society'},
-  {id:33, slug:'al-fasad-al-siyasi', ar:'الفساد السياسي', en:'Political Corruption', fr:'La Corruption Politique', theme:'society'},
-  {id:40, slug:'al-islam-wa-qanun', ar:'الإسلام وقانون الأحوال الشخصية', en:'Islam & Personal Status Law', fr:'L\'Islam et le Droit Personnel', theme:'society'},
-  {id:44, slug:'qadaya-al-marah', ar:'قضايا المرأة', en:'Women\'s Issues', fr:'Les Questions de la Femme', theme:'society'},
-  {id:46, slug:'huquq-al-insan', ar:'حقوق الإنسان في الإسلام', en:'Human Rights in Islam', fr:'Les Droits Humains en Islam', theme:'society'},
-  {id:47, slug:'haqiqat-al-qawmiyah', ar:'حقيقة القومية العربية', en:'Arab Nationalism', fr:'Le Nationalisme Arabe', theme:'society'},
-  {id:48, slug:'dustur-al-wahdah', ar:'دستور الوحدة الثقافية', en:'Charter of Cultural Unity', fr:'Charte de l\'Unité Culturelle', theme:'society'},
-  {id:39, slug:'al-taassub-wal-tasamuh', ar:'التعصب والتسامح', en:'Fanaticism & Tolerance', fr:'Fanatisme et Tolérance', theme:'society'},
+  {id:16, slug:'min-huna-nalam', ar:'من هنا نعلم', en:'This Is Where We Learn', fr:'D\'ici Nous Apprenons', icon:'📚', theme:'society'},
+  {id:29, slug:'al-islam-wal-awda-al-iqtisadiyah', ar:'الإسلام والأوضاع الاقتصادية', en:'Islam & Economics', fr:'Islam & Économie', icon:'💰', theme:'society'},
+  {id:30, slug:'al-islam-wal-istibdad', ar:'الإسلام والاستبداد السياسي', en:'Islam & Political Tyranny', fr:'Islam & Tyrannie', icon:'⛓️', theme:'society'},
+  {id:32, slug:'al-islam-wal-manahij', ar:'الإسلام والمناهج الاشتراكية', en:'Islam & Socialism', fr:'Islam & Socialisme', icon:'☭', theme:'society'},
+  {id:33, slug:'al-fasad-al-siyasi', ar:'الفساد السياسي', en:'Political Corruption', fr:'Corruption Politique', icon:'⚖️', theme:'society'},
+  {id:40, slug:'al-islam-wa-qanun', ar:'الإسلام وقانون الأحوال الشخصية', en:'Islam & Personal Status Law', fr:'Islam & Droit Personnel', icon:'📜', theme:'society'},
+  {id:44, slug:'qadaya-al-marah', ar:'قضايا المرأة', en:'Women\'s Issues', fr:'Questions de la Femme', icon:'🌹', theme:'society'},
+  {id:46, slug:'huquq-al-insan', ar:'حقوق الإنسان في الإسلام', en:'Human Rights in Islam', fr:'Droits Humains', icon:'🕊️', theme:'society'},
+  {id:47, slug:'haqiqat-al-qawmiyah', ar:'حقيقة القومية العربية', en:'Arab Nationalism', fr:'Nationalisme Arabe', icon:'🌍', theme:'society'},
+  {id:48, slug:'dustur-al-wahdah', ar:'دستور الوحدة الثقافية', en:'Charter of Cultural Unity', fr:'Charte d\'Unité', icon:'🤝', theme:'society'},
+  {id:39, slug:'al-taassub-wal-tasamuh', ar:'التعصب والتسامح', en:'Fanaticism & Tolerance', fr:'Fanatisme & Tolérance', icon:'☮️', theme:'society'},
 
-  // Theme 6: Dawah & Reform (9 books)
-  {id:9, slug:'miat-sual', ar:'مائة سؤال عن الإسلام', en:'100 Questions About Islam', fr:'100 Questions sur l\'Islam', theme:'dawah'},
-  {id:10, slug:'kayfa-nafham', ar:'كيف نفهم الإسلام', en:'How We Understand Islam', fr:'Comment Comprendre l\'Islam', theme:'dawah'},
-  {id:13, slug:'humum-daiya', ar:'هموم داعية', en:'Concerns of a Preacher', fr:'Soucis d\'un Prédicateur', theme:'dawah'},
-  {id:17, slug:'fi-mawkib-al-dawa', ar:'في موكب الدعوة', en:'In the Procession of Dawah', fr:'Dans la Procession de la Prédication', theme:'dawah'},
-  {id:41, slug:'al-dawah-fi-al-qarn', ar:'الدعوة في القرن الحالي', en:'Dawah This Century', fr:'La Dawah ce Siècle', theme:'dawah'},
-  {id:42, slug:'jihad-al-dawah', ar:'جهاد الدعوة', en:'Jihad of Dawah', fr:'Le Jihad de la Dawah', theme:'dawah'},
-  {id:49, slug:'mushkilat', ar:'مشكلات في طريق الحياة', en:'Problems on the Path of Life', fr:'Problèmes sur le Chemin de la Vie', theme:'dawah'},
-  {id:50, slug:'sayhah-tahdhir', ar:'صيحة تحذير', en:'A Warning Cry', fr:'Un Cri d\'Avertissement', theme:'dawah'},
-  {id:53, slug:'khutab-al-ghazali', ar:'خطب الغزالي', en:'Al-Ghazali\'s Sermons', fr:'Les Sermons d\'Al-Ghazali', theme:'dawah'},
+  {id:9, slug:'miat-sual', ar:'مائة سؤال عن الإسلام', en:'100 Questions About Islam', fr:'100 Questions', icon:'❓', theme:'dawah'},
+  {id:10, slug:'kayfa-nafham', ar:'كيف نفهم الإسلام', en:'How We Understand Islam', fr:'Comprendre l\'Islam', icon:'🧭', theme:'dawah'},
+  {id:13, slug:'humum-daiya', ar:'هموم داعية', en:'Concerns of a Preacher', fr:'Soucis d\'un Prédicateur', icon:'💭', theme:'dawah'},
+  {id:17, slug:'fi-mawkib-al-dawa', ar:'في موكب الدعوة', en:'In the Procession of Dawah', fr:'Dans la Procession', icon:'🚶', theme:'dawah'},
+  {id:41, slug:'al-dawah-fi-al-qarn', ar:'الدعوة في القرن الحالي', en:'Dawah This Century', fr:'Dawah ce Siècle', icon:'🕰️', theme:'dawah'},
+  {id:42, slug:'jihad-al-dawah', ar:'جهاد الدعوة', en:'Jihad of Dawah', fr:'Jihad de la Dawah', icon:'⚔️', theme:'dawah'},
+  {id:49, slug:'mushkilat', ar:'مشكلات في طريق الحياة', en:'Problems on the Path', fr:'Problèmes du Chemin', icon:'🛤️', theme:'dawah'},
+  {id:50, slug:'sayhah-tahdhir', ar:'صيحة تحذير', en:'A Warning Cry', fr:'Un Cri d\'Avertissement', icon:'📢', theme:'dawah'},
+  {id:53, slug:'khutab-al-ghazali', ar:'خطب الغزالي', en:'Al-Ghazali\'s Sermons', fr:'Sermons d\'Al-Ghazali', icon:'🎙️', theme:'dawah'},
 
-  // Theme 7: Civilization & History (7 books)
-  {id:12, slug:'qadhaaif-al-haqq', ar:'قذائف الحق', en:'Missiles of Truth', fr:'Missiles de Vérité', theme:'civilization'},
-  {id:14, slug:'al-ghazw-al-thaqafi', ar:'الغزو الثقافي', en:'Cultural Invasion', fr:'L\'Invasion Culturelle', theme:'civilization'},
-  {id:18, slug:'zalam-min-al-gharb', ar:'ظلام من الغرب', en:'Darkness from the West', fr:'Ténèbres de l\'Occident', theme:'civilization'},
-  {id:28, slug:'al-islam-al-muftara-alayh', ar:'الإسلام المفترى عليه', en:'Islam Falsely Accused', fr:'L\'Islam Accusé à Tort', theme:'civilization'},
-  {id:31, slug:'al-islam-fi-wajh-al-zahf', ar:'الإسلام في وجه الزحف الأحمر', en:'Islam Facing the Red Tide', fr:'L\'Islam Face à la Marée Rouge', theme:'civilization'},
-  {id:34, slug:'al-istimar', ar:'الاستعمار أحقاد وأطماع', en:'Colonialism: Grudges & Greed', fr:'Le Colonialisme: Rancunes et Convoitises', theme:'civilization'},
-  {id:54, slug:'shahid-ala-al-asr', ar:'شاهد على العصر', en:'Witness to the Age', fr:'Témoin de l\'Époque', theme:'civilization'},
+  {id:12, slug:'qadhaaif-al-haqq', ar:'قذائف الحق', en:'Missiles of Truth', fr:'Missiles de Vérité', icon:'💥', theme:'civ'},
+  {id:14, slug:'al-ghazw-al-thaqafi', ar:'الغزو الثقافي', en:'Cultural Invasion', fr:'Invasion Culturelle', icon:'🎭', theme:'civ'},
+  {id:18, slug:'zalam-min-al-gharb', ar:'ظلام من الغرب', en:'Darkness from the West', fr:'Ténèbres de l\'Occident', icon:'🌑', theme:'civ'},
+  {id:28, slug:'al-islam-al-muftara-alayh', ar:'الإسلام المفترى عليه', en:'Islam Falsely Accused', fr:'Islam Accusé à Tort', icon:'⚡', theme:'civ'},
+  {id:31, slug:'al-islam-fi-wajh-al-zahf', ar:'الإسلام في وجه الزحف الأحمر', en:'Islam Facing the Red Tide', fr:'Face à la Marée Rouge', icon:'🌊', theme:'civ'},
+  {id:34, slug:'al-istimar', ar:'الاستعمار أحقاد وأطماع', en:'Colonialism: Grudges & Greed', fr:'Colonialisme', icon:'⛓️', theme:'civ'},
+  {id:54, slug:'shahid-ala-al-asr', ar:'شاهد على العصر', en:'Witness to the Age', fr:'Témoin de l\'Époque', icon:'👁️', theme:'civ'},
 
-  // Bonus: Specific Topics (2 books)
-  {id:52, slug:'ramadan-wal-siyam', ar:'رمضان والصيام', en:'Ramadan & Fasting', fr:'Ramadan et le Jeûne', theme:'bonus'},
+  {id:52, slug:'ramadan-wal-siyam', ar:'رمضان والصيام', en:'Ramadan & Fasting', fr:'Ramadan & Jeûne', icon:'🌙', theme:'bonus'},
 ];
 
 const THEMES = {
-  quran: {
-    ar:{title:'القرآن الكريم',desc:'التعامل مع القرآن، التفسير الموضوعي، والدفاع عنه ضد الشبهات'},
-    en:{title:'The Noble Quran',desc:'Engaging with the Quran, thematic interpretation, and defense against doubts'},
-    fr:{title:'Le Noble Coran',desc:'Interaction avec le Coran, tafsir thématique, et défense contre les doutes'},
-    icon:'📖',color:'#1e6f3e'
-  },
-  sunnah: {
-    ar:{title:'السنة والحديث',desc:'السيرة النبوية، منهج الحديث، والذكر والدعاء'},
-    en:{title:'Sunnah & Hadith',desc:'Prophetic biography, hadith methodology, dhikr and dua'},
-    fr:{title:'Sunna et Hadith',desc:'Biographie prophétique, méthodologie du hadith, dhikr'},
-    icon:'🌟',color:'#b8860b'
-  },
-  creed: {
-    ar:{title:'العقيدة والإيمان',desc:'أركان الإيمان، الجانب الروحي، والتأمل في الحياة'},
-    en:{title:'Creed & Faith',desc:'Pillars of faith, spiritual dimension, and reflections on life'},
-    fr:{title:'Croyance et Foi',desc:'Piliers de la foi, dimension spirituelle, réflexions'},
-    icon:'☪️',color:'#2e5d3a'
-  },
-  ethics: {
-    ar:{title:'الأخلاق والتربية',desc:'خلق المسلم، تربية النفس، ومحاسبة الذات'},
-    en:{title:'Ethics & Character',desc:'Muslim character, self-cultivation, and self-accountability'},
-    fr:{title:'Éthique et Caractère',desc:'Caractère musulman, éducation de soi, autocritique'},
-    icon:'💎',color:'#6b3fa0'
-  },
-  society: {
-    ar:{title:'المجتمع والسياسة',desc:'الإسلام والاقتصاد والدولة وحقوق المرأة والإنسان'},
-    en:{title:'Society & Politics',desc:'Islam, economics, state, women\'s rights, and human rights'},
-    fr:{title:'Société et Politique',desc:'Islam, économie, État, droits des femmes et humains'},
-    icon:'⚖️',color:'#8b4513'
-  },
-  dawah: {
-    ar:{title:'الدعوة والإصلاح',desc:'قضايا الدعوة الإسلامية والمشكلات المعاصرة'},
-    en:{title:'Dawah & Reform',desc:'Islamic preaching challenges and contemporary issues'},
-    fr:{title:'Prédication et Réforme',desc:'Défis de la prédication et questions contemporaines'},
-    icon:'🎙️',color:'#c84e17'
-  },
-  civilization: {
-    ar:{title:'الحضارة والتاريخ',desc:'الغزو الثقافي، الاستعمار، وسيرة الشيخ الغزالي'},
-    en:{title:'Civilization & History',desc:'Cultural invasion, colonialism, and Al-Ghazali\'s biography'},
-    fr:{title:'Civilisation et Histoire',desc:'Invasion culturelle, colonialisme, biographie d\'Al-Ghazali'},
-    icon:'🏛️',color:'#4a5d8f'
-  },
-  bonus: {
-    ar:{title:'مواضيع خاصة',desc:'رمضان والصيام'},
-    en:{title:'Special Topics',desc:'Ramadan and fasting'},
-    fr:{title:'Sujets Spéciaux',desc:'Ramadan et jeûne'},
-    icon:'🌙',color:'#5b7fa7'
-  }
+  quran:{icon:'📖',ar:{t:'القرآن الكريم',d:'التعامل مع القرآن، التفسير الموضوعي، والدفاع عنه'},en:{t:'The Noble Quran',d:'Engaging with the Quran, thematic interpretation, defense'},fr:{t:'Le Noble Coran',d:'Interaction, tafsir thématique, défense'}},
+  sunnah:{icon:'🌟',ar:{t:'السنة والحديث',d:'السيرة النبوية، منهج الحديث، والذكر والدعاء'},en:{t:'Sunnah & Hadith',d:'Prophetic biography, hadith methodology'},fr:{t:'Sunna et Hadith',d:'Biographie prophétique, méthodologie'}},
+  creed:{icon:'☪️',ar:{t:'العقيدة والإيمان',d:'أركان الإيمان، الجانب الروحي، والتأمل'},en:{t:'Creed & Faith',d:'Pillars of faith, spiritual dimension'},fr:{t:'Croyance et Foi',d:'Piliers de la foi, dimension spirituelle'}},
+  ethics:{icon:'💎',ar:{t:'الأخلاق والتربية',d:'خلق المسلم، تربية النفس، ومحاسبة الذات'},en:{t:'Ethics & Character',d:'Muslim character, self-cultivation'},fr:{t:'Éthique et Caractère',d:'Caractère musulman, éducation'}},
+  society:{icon:'⚖️',ar:{t:'المجتمع والسياسة',d:'الإسلام والاقتصاد والدولة وحقوق المرأة والإنسان'},en:{t:'Society & Politics',d:'Islam, economics, state, rights'},fr:{t:'Société et Politique',d:'Islam, économie, droits'}},
+  dawah:{icon:'🎙️',ar:{t:'الدعوة والإصلاح',d:'قضايا الدعوة الإسلامية والمشكلات المعاصرة'},en:{t:'Dawah & Reform',d:'Islamic preaching and contemporary issues'},fr:{t:'Prédication & Réforme',d:'Défis contemporains'}},
+  civ:{icon:'🏛️',ar:{t:'الحضارة والتاريخ',d:'الغزو الثقافي، الاستعمار، وسيرة الشيخ الغزالي'},en:{t:'Civilization & History',d:'Cultural invasion, colonialism, biography'},fr:{t:'Civilisation & Histoire',d:'Invasion culturelle, colonialisme'}},
+  bonus:{icon:'🌙',ar:{t:'مواضيع خاصة',d:'رمضان والصيام'},en:{t:'Special Topics',d:'Ramadan and fasting'},fr:{t:'Sujets Spéciaux',d:'Ramadan et jeûne'}},
 };
 
 const LABELS = {
   ar:{
-    subtitle:'٥٢ تطبيق ويب تفاعلي ثلاثي اللغة مبني على كتب الشيخ محمد الغزالي (١٩١٧-١٩٩٦) — منظمة حسب الموضوع، مع رواة صوتيين ومسابقات ووضعين للأعمار',
-    stats:['كتاب','لغات','مواضيع','مجاني'],
+    title:'مكتبة الغزالي',heroTitle:'مكتبة الغزالي التفاعلية',
+    tagline:'٥٢ تطبيق ويب تفاعلي ثلاثي اللغة مبني على كتب الشيخ محمد الغزالي رحمه الله (١٩١٧–١٩٩٦) — منظمة حسب الموضوع، مع رواة صوتيين ومسابقات ووضعين للأعمار',
+    books:'كتاباً',themes:'مواضيع',langs:'لغات',free:'مجاني',
     search:'ابحث في الكتب...',
     openApp:'افتح التطبيق ←',
-    disclaimer:'⚠️ <strong>تنبيه:</strong> هذه التطبيقات مستوحاة من كتب الشيخ محمد الغزالي رحمه الله، وليست بديلاً عن قراءة الكتب الأصلية. المحتوى ملخصات تعليمية مبسطة.'
+    disclaimer:'<strong>⚠️ تنبيه مهم:</strong> هذه التطبيقات مستوحاة من كتب الشيخ محمد الغزالي رحمه الله، وليست بديلاً عن قراءة الكتب الأصلية. المحتوى ملخصات تعليمية مبسطة. يُرجى الرجوع للكتب الأصلية وللعلماء المتخصصين.',
+    footer:'صُنعت بحب في الجزائر'
   },
   en:{
-    subtitle:'52 interactive trilingual web apps based on the books of Sheikh Mohammed Al-Ghazali (1917-1996) — organized by theme, with audio narrators, quizzes, and age modes',
-    stats:['Books','Languages','Themes','Free'],
+    title:'Al-Ghazali Library',heroTitle:'Al-Ghazali Interactive Library',
+    tagline:'52 interactive trilingual web apps based on the books of Sheikh Mohammed Al-Ghazali (1917-1996) — organized by theme, with audio narrators, quizzes, and age modes',
+    books:'Books',themes:'Themes',langs:'Languages',free:'Free',
     search:'Search books...',
     openApp:'Open App →',
-    disclaimer:'⚠️ <strong>Notice:</strong> These apps are inspired by the books of Sheikh Mohammed Al-Ghazali (may God have mercy on him) and are not a substitute for reading the original books. Content consists of simplified educational summaries.'
+    disclaimer:'<strong>⚠️ Notice:</strong> These apps are inspired by the books of Sheikh Mohammed Al-Ghazali and are not a substitute for reading the original books. Content is simplified educational summaries. Please refer to the original books and qualified scholars.',
+    footer:'Made with love in Algeria'
   },
   fr:{
-    subtitle:'52 applications web interactives trilingues basées sur les livres du Cheikh Mohammed Al-Ghazali (1917-1996) — organisées par thème, avec narrateurs audio, quiz et modes d\'âge',
-    stats:['Livres','Langues','Thèmes','Gratuit'],
-    search:'Rechercher des livres...',
+    title:'Bibliothèque Al-Ghazali',heroTitle:'Bibliothèque Al-Ghazali Interactive',
+    tagline:'52 applications web interactives trilingues basées sur les livres du Cheikh Mohammed Al-Ghazali (1917-1996) — organisées par thème, avec narrateurs audio, quiz et modes d\'âge',
+    books:'Livres',themes:'Thèmes',langs:'Langues',free:'Gratuit',
+    search:'Rechercher...',
     openApp:'Ouvrir l\'App →',
-    disclaimer:'⚠️ <strong>Avis:</strong> Ces applications sont inspirées des livres du Cheikh Mohammed Al-Ghazali (qu\'Allah lui fasse miséricorde) et ne remplacent pas la lecture des livres originaux.'
+    disclaimer:'<strong>⚠️ Avis:</strong> Ces applications sont inspirées des livres du Cheikh Mohammed Al-Ghazali et ne remplacent pas la lecture des livres originaux. Le contenu est constitué de résumés éducatifs simplifiés.',
+    footer:'Fait avec amour en Algérie'
   }
 };
 
 // ═══════════════ STATE ═══════════════
 let currentLang = 'ar';
-let currentTheme = 'light';
+let currentTheme = localStorage.getItem('ghazali-lib-theme') || 'light';
 
 // ═══════════════ RENDER ═══════════════
-function renderSections() {
+function renderSections(){
+  const order = ['quran','sunnah','creed','ethics','society','dawah','civ','bonus'];
   const container = document.getElementById('sectionsContainer');
-  const themeOrder = ['quran','sunnah','creed','ethics','society','dawah','civilization','bonus'];
-  container.innerHTML = themeOrder.map(themeKey => {
-    const theme = THEMES[themeKey];
-    const books = BOOKS_DATA.filter(b => b.theme === themeKey);
+  const labels = LABELS[currentLang];
+  container.innerHTML = order.map(key=>{
+    const theme = THEMES[key];
+    const books = BOOKS.filter(b=>b.theme===key);
     const t = theme[currentLang];
     return `
-      <section id="theme-${themeKey}" data-theme-section="${themeKey}">
-        <div class="container">
-          <div class="section-header">
-            <h2 class="section-title">${theme.icon} ${t.title}</h2>
-            <span class="section-count">${books.length}</span>
-            <p class="section-desc">${t.desc}</p>
-          </div>
-          <div class="grid">
-            ${books.map(b => renderCard(b)).join('')}
-          </div>
+      <div class="theme-section" data-section="${key}">
+        <div class="section-head">
+          <span class="section-icon">${theme.icon}</span>
+          <h3 class="section-title">${t.t}</h3>
+          <span class="section-count">${books.length}</span>
+          <p class="section-desc">${t.d}</p>
         </div>
-      </section>
-    `;
+        <div class="grid">
+          ${books.map(b=>renderCard(b,labels)).join('')}
+        </div>
+      </div>`;
   }).join('');
 }
 
-function renderCard(book) {
-  const labels = LABELS[currentLang];
-  const url = `https://abourdim.github.io/${book.slug}/`;
-  const title = book[currentLang] || book.ar;
+function renderCard(book,labels){
+  const url=`https://abourdim.github.io/${book.slug}/`;
   return `
-    <a href="${url}" target="_blank" class="card fade-in" data-slug="${book.slug}" data-ar="${book.ar}" data-en="${book.en}" data-fr="${book.fr}">
-      <div class="card-num">${String(book.id).padStart(2,'0')}</div>
-      <div class="card-title-ar" dir="rtl">${book.ar}</div>
-      <div class="card-title-en" dir="ltr">${book.en}</div>
-      <div class="card-footer">
-        <span>github · live</span>
-        <span class="card-link">${labels.openApp}</span>
+    <a href="${url}" target="_blank" class="book-card" data-slug="${book.slug}" data-ar="${book.ar}" data-en="${book.en}" data-fr="${book.fr}">
+      <div class="book-num">${String(book.id).padStart(2,'0')}</div>
+      <div class="book-icon">${book.icon}</div>
+      <div class="book-title-ar" dir="rtl">${book.ar}</div>
+      <div class="book-title-en" dir="ltr">${book.en}</div>
+      <div class="book-footer">
+        <div class="badges"><span class="badge">AR</span><span class="badge">EN</span><span class="badge">FR</span></div>
+        <span class="open-link">${labels.openApp}</span>
       </div>
-    </a>
-  `;
+    </a>`;
 }
 
 // ═══════════════ LANG ═══════════════
-function setLang(lang) {
-  currentLang = lang;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  document.querySelectorAll('.ctrl-btn[data-lang]').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === lang);
-  });
-  const labels = LABELS[lang];
-  document.getElementById('subtitle').textContent = labels.subtitle;
-  document.getElementById('searchInput').placeholder = labels.search;
-  document.getElementById('disclaimer').innerHTML = labels.disclaimer;
-  document.querySelectorAll('.stat-label').forEach((el,i) => el.textContent = labels.stats[i]);
+function setLang(lang){
+  currentLang=lang;
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  document.querySelectorAll('.lang-opt').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  const L=LABELS[lang];
+  document.getElementById('logoTitle').textContent=L.title;
+  document.getElementById('heroTitle').textContent=L.heroTitle;
+  document.getElementById('tagline').textContent=L.tagline;
+  document.getElementById('lblBooks').textContent=L.books;
+  document.getElementById('lblThemes').textContent=L.themes;
+  document.getElementById('lblLangs').textContent=L.langs;
+  document.getElementById('lblFree').textContent=L.free;
+  document.getElementById('searchInput').placeholder=L.search;
+  document.getElementById('disclaimer').innerHTML=L.disclaimer;
+  document.getElementById('footerText').textContent=L.footer+' · Made with love in Algeria';
   renderSections();
 }
 
 // ═══════════════ THEME ═══════════════
-function toggleTheme() {
-  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-  document.documentElement.dataset.theme = currentTheme;
-  document.getElementById('themeBtn').textContent = currentTheme === 'light' ? '🌙' : '☀️';
-  localStorage.setItem('ghazali-theme', currentTheme);
+function toggleTheme(){
+  currentTheme=currentTheme==='light'?'dark':'light';
+  document.documentElement.dataset.theme=currentTheme;
+  document.getElementById('themeBtn').textContent=currentTheme==='light'?'🌙':'☀️';
+  localStorage.setItem('ghazali-lib-theme',currentTheme);
 }
 
 // ═══════════════ SEARCH ═══════════════
-function filterApps(query) {
-  const q = query.trim().toLowerCase();
-  document.querySelectorAll('.card').forEach(card => {
-    const searchText = [card.dataset.ar, card.dataset.en, card.dataset.fr, card.dataset.slug].join(' ').toLowerCase();
-    card.classList.toggle('hidden', q && !searchText.includes(q));
+function filterBooks(q){
+  q=q.trim().toLowerCase();
+  document.querySelectorAll('.book-card').forEach(c=>{
+    const s=(c.dataset.ar+' '+c.dataset.en+' '+c.dataset.fr+' '+c.dataset.slug).toLowerCase();
+    c.classList.toggle('hidden',q&&!s.includes(q));
   });
-  // Hide empty sections
-  document.querySelectorAll('section').forEach(sec => {
-    const visible = sec.querySelectorAll('.card:not(.hidden)').length;
-    sec.classList.toggle('hidden', q && visible === 0);
+  document.querySelectorAll('.theme-section').forEach(sec=>{
+    const visible=sec.querySelectorAll('.book-card:not(.hidden)').length;
+    sec.classList.toggle('hidden',q&&visible===0);
   });
 }
 
 // ═══════════════ INIT ═══════════════
-const savedTheme = localStorage.getItem('ghazali-theme');
-if (savedTheme === 'dark') {
-  currentTheme = 'dark';
-  document.documentElement.dataset.theme = 'dark';
-  document.getElementById('themeBtn').textContent = '☀️';
+if(currentTheme==='dark'){
+  document.documentElement.dataset.theme='dark';
+  document.getElementById('themeBtn').textContent='☀️';
 }
 renderSections();
 </script>
