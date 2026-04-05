@@ -150,6 +150,28 @@ main{max-width:1280px;margin:0 auto;padding:14px 20px 20px}
 [dir="rtl"] .disclaimer{border-left:none;border-right:4px solid var(--gold);border-radius:var(--r) 0 0 var(--r)}
 .disclaimer strong{color:var(--gold)}
 
+/* ═══ TICKER ═══ */
+.ticker-bar{
+  background:linear-gradient(135deg,rgba(44,36,23,.95),rgba(30,24,14,.95));
+  border-top:1px solid rgba(200,168,78,.25);
+  border-bottom:1px solid rgba(200,168,78,.15);
+  padding:8px 0;overflow:hidden;position:relative;
+}
+[data-theme="dark"] .ticker-bar{background:linear-gradient(135deg,rgba(10,8,5,.95),rgba(20,16,10,.95))}
+.ticker-wrap{
+  overflow:hidden;width:100%;
+  -webkit-mask-image:linear-gradient(to right,transparent,black 6%,black 94%,transparent);
+  mask-image:linear-gradient(to right,transparent,black 6%,black 94%,transparent);
+}
+.ticker-text{
+  display:inline-flex;white-space:nowrap;
+  color:var(--gold);font-size:.78rem;font-family:var(--fu);opacity:.95;
+  font-weight:500;letter-spacing:.3px;
+}
+.ticker-text .tc{white-space:nowrap;flex-shrink:0;padding-right:24px}
+[lang="ar"] .ticker-text{font-family:var(--fa),serif;font-size:.85rem}
+@keyframes tickerMarquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
 /* ═══ FOOTER ═══ */
 footer{
   text-align:center;padding:14px 20px;
@@ -234,6 +256,11 @@ footer a:hover{color:var(--grn);text-decoration:underline}
 
 <div class="disclaimer" id="disclaimer">
   <strong>⚠️ تنبيه مهم:</strong> هذه التطبيقات مستوحاة من كتب الشيخ محمد الغزالي رحمه الله، وليست بديلاً عن قراءة الكتب الأصلية. المحتوى ملخصات تعليمية مبسطة. يُرجى الرجوع للكتب الأصلية وللعلماء المتخصصين.
+</div>
+
+<!-- ═══ TICKER BAR ═══ -->
+<div class="ticker-bar">
+  <div class="ticker-wrap"><div id="tickerText" class="ticker-text"></div></div>
 </div>
 
 <footer>
@@ -408,6 +435,7 @@ function setLang(lang){
   document.getElementById('searchInput').placeholder=L.search;
   document.getElementById('disclaimer').innerHTML=L.disclaimer;
   renderSections();
+  startTicker();
 }
 
 // ═══════════════ THEME ═══════════════
@@ -431,12 +459,72 @@ function filterBooks(q){
   });
 }
 
+// ═══════════════ TICKER ═══════════════
+const TICKER_ITEMS = {
+  ar: [
+    '📖 ٥٢ كتاباً للشيخ محمد الغزالي في مكان واحد',
+    '💎 "الأخلاق ثمرة الإيمان وأكمل المؤمنين إيماناً أحسنهم خلقاً"',
+    '🌿 "الإسلام دين المفكرين — لا إيمان بلا تدبر"',
+    '⚖️ "العدل فريضة إلهية قبل أن يكون مطلباً سياسياً"',
+    '📚 "من هنا نعلم — الإسلام دين ودولة"',
+    '🕊️ "أعرف الرجال بالحق لا الحق بالرجال" — الغزالي',
+    '🌙 "القرآن كتاب هداية لا مجرد كتاب أحكام"',
+    '✨ "الإلحاد آفة نفسية وليس شبهة علمية"',
+    '🤝 "التعصب والتسامح — الإسلام في قلب الاعتدال"',
+    '🌟 الشيخ محمد الغزالي (١٩١٧-١٩٩٦) — أديب الدعوة',
+    '📿 "لا سنة بغير فقه إسلامي"',
+    '⭐ ٧ مواضيع · ٣ لغات · قراءة صوتية · مسابقات',
+  ],
+  en: [
+    '📖 52 books by Sheikh Mohammed Al-Ghazali in one place',
+    '💎 "Ethics are the fruit of faith — the best believers have the best character"',
+    '🌿 "Islam is the religion of thinkers — no faith without reflection"',
+    '⚖️ "Justice is a divine obligation before being a political demand"',
+    '📚 "From Here We Learn — Islam is both religion and state"',
+    '🕊️ "I know men by truth, not truth by men" — Al-Ghazali',
+    '🌙 "The Quran is a book of guidance, not just a book of rulings"',
+    '✨ "Atheism is a psychological affliction, not a scientific doubt"',
+    '🤝 Fanaticism & Tolerance — Islam at the heart of moderation',
+    '🌟 Sheikh Mohammed Al-Ghazali (1917-1996) — The Orator of Dawah',
+    '📿 "No Sunnah without Islamic jurisprudence"',
+    '⭐ 7 themes · 3 languages · Audio narration · Quizzes',
+  ],
+  fr: [
+    '📖 52 livres du Cheikh Mohammed Al-Ghazali en un seul endroit',
+    '💎 "L\'éthique est le fruit de la foi — les meilleurs croyants ont le meilleur caractère"',
+    '🌿 "L\'Islam est la religion des penseurs — pas de foi sans réflexion"',
+    '⚖️ "La justice est une obligation divine avant d\'être une exigence politique"',
+    '📚 "D\'ici nous apprenons — l\'Islam est religion et État"',
+    '🕊️ "Je connais les hommes par la vérité, pas la vérité par les hommes" — Al-Ghazali',
+    '🌙 "Le Coran est un livre de guidance, pas seulement de règles"',
+    '✨ "L\'athéisme est une maladie psychologique, pas un doute scientifique"',
+    '🤝 Fanatisme et Tolérance — l\'Islam au coeur de la modération',
+    '🌟 Cheikh Mohammed Al-Ghazali (1917-1996) — L\'Orateur de la Prédication',
+    '📿 "Pas de Sunna sans jurisprudence islamique"',
+    '⭐ 7 thèmes · 3 langues · Narration audio · Quiz',
+  ],
+};
+
+function startTicker(){
+  const el=document.getElementById('tickerText');
+  if(!el)return;
+  const items=TICKER_ITEMS[currentLang]||TICKER_ITEMS.ar;
+  const sep='        ◆        ';
+  const text=items.join(sep)+sep;
+  el.innerHTML='<span class="tc">'+text+'</span><span class="tc" aria-hidden="true">'+text+'</span>';
+  el.style.animation='none';
+  void el.offsetWidth;
+  const duration=Math.max(60,text.length*0.12);
+  el.style.animation='tickerMarquee '+duration+'s linear infinite';
+}
+
 // ═══════════════ INIT ═══════════════
 if(currentTheme==='dark'){
   document.documentElement.dataset.theme='dark';
   document.getElementById('themeBtn').textContent='☀️';
 }
 renderSections();
+startTicker();
 </script>
 
 </body>
